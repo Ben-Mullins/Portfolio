@@ -5,7 +5,7 @@ from pymongo import MongoClient
 __author__ = "Ben Mullins"
 
 def main():
-    print("\nYou have entered a chatroom with J.A.M.E.S\n____________________________________\n")
+    print("\nYou have entered a chatroom with J.A.M.E.S\n________________________________________________\n")
     send = ""
     recieve = "Hello, hooman!"
     prevRecieve = ""
@@ -17,7 +17,7 @@ def main():
 
     while send != "quit()":
         
-        send = input("You: ")
+        send = input("\nYou: ")
         prevRecieve = recieve
 
         #Set up reply
@@ -25,10 +25,13 @@ def main():
 
         if 'Out' in str(replies):
             recieve = str(replies).split("'Out': '")[1][:-2]
-        else:
-            recieve = send
+            print("\nJ.A.M.E.S: " + recieve)
 
-        print("J.A.M.E.S: " + recieve)
+        else:
+            print("\nJ.A.M.E.S: I do not understand what that means how would you respond if i said '" + send + "' to you?")
+            recieve = (send)
+
+        
         #Add to database
         addon = {
             "In" : re.sub(r'[^a-zA-Z0-9\s]+', '', prevRecieve.lower()),
