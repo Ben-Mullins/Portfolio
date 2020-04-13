@@ -1,0 +1,32 @@
+@import url('~bootstrap/dist/css/bootstrap.css');
+
+body {
+  background-color: rgb(65, 65, 65);
+}
+
+#main {
+  color: white;
+}
+
+.top-buffer {
+  margin-top: 20px;
+}
+
+.col {
+  border: 1px solid white;
+}
+
+#ticketInfo {
+  background-color: rgb(65, 65, 65);
+  color: white;
+}
+
+.card {
+  background-color: rgb(65, 65, 65);
+  color: white;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.carousel-item {
+  height:500px;
+}
