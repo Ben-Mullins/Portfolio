@@ -14,21 +14,22 @@ key = ["d7a17b6095201e1ceae53c3b641570c1e2ded917a5dd539a63881b0c995f978b",
 
 """
 Find all the files in a directory on VirusTotal and notify if any are potentially malicious.
-
-June 16, 2020
 """
 
 def main():
-    basepath = "/Users/ben/operating_systems" # Directory you want to scan
+    basepath = "/Users/ben/Documents/Portfolio/python" # Directory you want to scan
     sha256hasher = FileHash("sha256")
     print("Finding hashes to send to VirusTotal...")
     hashlist = sha256hasher.hash_dir(basepath)
+
+    keynum = 0
 
     for item in hashlist:
         try:
             shahash = item[1]
             filename = item[0]
-            params = {'apikey': key[random.randint(0,2)], 'resource': shahash} # get around API limit with 3 keys
+            keynum += 1
+            params = {'apikey': key[(keynum % 3) - 1], 'resource': shahash} # get around API limit with 3 keys
             hashresponse = requests.get("https://www.virustotal.com/vtapi/v2/file/report", params=params, timeout=3) 
             try:
                 json_payload = hashresponse.json()
@@ -50,3 +51,4 @@ if __name__ == "__main__":
     print("VirusTotal Lookup")
     print("Made by " + __author__)
     main()
+    del key
