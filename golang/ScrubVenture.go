@@ -212,12 +212,12 @@ func main() {
 				monster.Attack = random(20) + 8
 				monster.Defense = random(10)
 				monster.Experience = random(175) + 79
-			} else if get_level(player) >= 80 && get_level(player) < 200 { // Normal Encounter
+			} else if get_level(player) >= 80 && get_level(player) < 200 { // Hard Encounter
 				monster.Name = StrongMonsterName[random(len(StrongMonsterName))]
-				monster.Health = random(player.Attack*6) + 30
+				monster.Health = random(player.Attack*4) + 30
 				monster.Attack = random(player.Defense*2) + 16
-				monster.Defense = random(get_level(player)/10 + 4)
-				monster.Experience = random(275) + 105
+				monster.Defense = random(get_level(player)/15 + 4)
+				monster.Experience = random(325) + 105
 			}
 
 			player.Health = battle(player, monster)
@@ -285,13 +285,19 @@ func main() {
 					monster.Attack = random(4) + get_level(player)/5
 					monster.Defense = random(3)
 					monster.Experience = random(50) + 15
-				} else if get_level(player) >= 25 && get_level(player) < 80 { // Easy Encounter
+				} else if get_level(player) >= 25 && get_level(player) < 80 { // Normal Encounter
 					monster.Name = NormMonsterName[random(len(NormMonsterName))]
 					monster.Health = random(35) + 20
 					monster.Attack = random(20) + 8
 					monster.Defense = random(10) + 3
 					monster.Experience = random(175) + 79
-				}
+				} else if get_level(player) >= 80 && get_level(player) < 200 { // Hard Encounter
+                                	monster.Name = StrongMonsterName[random(len(StrongMonsterName))]
+                                	monster.Health = random(player.Attack*4) + 30
+                                	monster.Attack = random(player.Defense*2) + 16
+                                	monster.Defense = random(get_level(player)/15 + 4)
+                                	monster.Experience = random(325) + 105
+                        	}
 
 				player.Health = battle(player, monster)
 
