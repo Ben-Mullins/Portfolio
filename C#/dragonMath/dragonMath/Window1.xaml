@@ -1,0 +1,26 @@
+﻿<Window x:Class="dragonMath.Window1"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:dragonMath"
+        mc:Ignorable="d"
+        Title="Dragon Math" Height="585.914" Width="575" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="images/dragonFight.jpg" Stretch="UniformToFill"/>
+        </Grid.Background>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="89*"/>
+            <ColumnDefinition Width="434*"/>
+            <ColumnDefinition Width="46*"/>
+        </Grid.ColumnDefinitions>
+        <Button Content="Flee To Main Menu" HorizontalAlignment="Left" Margin="109,478,0,0" VerticalAlignment="Top" Width="194" Height="42" Name="btnBack" Background="#FF2B2929" Foreground="#FF7A7A7A" BorderBrush="#FF7A7A7A" FontSize="20" Grid.Column="1" Click="Cancel_Click"/>
+        <Button Content="Start" HorizontalAlignment="Left" Margin="109,366,0,0" VerticalAlignment="Top" Width="194" Height="76" Name="btnSubmit" Background="#FF2B2929" Foreground="#FF7A7A7A" BorderBrush="#FF7A7A7A" FontSize="30" Grid.Column="1" Click="Submit_Click"/>
+        <TextBox KeyDown="enterSubmit" HorizontalAlignment="Left" Height="46" Margin="251,144,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="54" Name="boxAnswer" Background="#FF2B2929" BorderBrush="#FF7A7A7A" Foreground="#FF7A7A7A" SelectionBrush="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MaxLength="3" MaxLines="1" FontSize="18" Grid.Column="1"/>
+        <Label Content="" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="95,144,201,0" Height="46" Width="136" Background="#FF2B2929" FontSize="20" Name="lblQuestion" Foreground="#FF7A7A7A" BorderThickness="3" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="#FF7A7A7A" Grid.Column="1"/>
+        <Label Content="0" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="50,31,407,0" Height="48" Width="64" Background="#FF2B2929" FontSize="20" Name="lblTimer" Foreground="#FF7A7A7A" BorderThickness="3" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="#FF7A7A7A" Grid.ColumnSpan="2"/>
+        <Label Content="Press Start!" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="32,284,353,0" Height="40" Width="136" Background="#FF2B2929" FontSize="20" x:Name="lblstatus" Foreground="#FF7A7A7A" BorderThickness="3" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="#FF7A7A7A" Grid.ColumnSpan="2"/>
+
+    </Grid>
+</Window>
