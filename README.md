@@ -1,3 +1,3 @@
 # Ben Mullins' Portfolio
 
-A few of my side projects that I made in my spare time.
+Portfolio of some of my projects I've worked on by myself.
