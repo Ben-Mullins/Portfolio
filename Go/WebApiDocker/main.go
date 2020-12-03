@@ -14,6 +14,7 @@ func about(response http.ResponseWriter, r *http.Request) {
 }
 
 func requestHandler() {
+	fmt.Println("Handling functions")
 	http.HandleFunc("/", rootPage)
 	http.HandleFunc("/about", about)
 
@@ -22,5 +23,6 @@ func requestHandler() {
 }
 
 func main() {
+	fmt.Println("running")
 	requestHandler()
 }
