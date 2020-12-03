@@ -18,7 +18,7 @@ func requestHandler() {
 	http.HandleFunc("/", rootPage)
 	http.HandleFunc("/about", about)
 
-	err := http.ListenAndServe("localhost:8080", nil)
+	err := http.ListenAndServe(":8080", nil)
 	fmt.Println(err)
 }
 
