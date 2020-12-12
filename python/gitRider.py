@@ -310,7 +310,7 @@ def pushToGit():
     os.system("echo a >> changefile.txt")
     os.system("git add changefile.txt")
     os.system("git commit -m \"Draw\"")
-    os.system("git push")
+    os.system("git push -u origin master")
 
 def pushOrNaw():
     date = datetime.datetime.now()
@@ -323,6 +323,8 @@ def pushOrNaw():
                 break
     if push:
         pushToGit()
+    else:
+        print("Not a push day.")
 
 def main():
     if not os.path.exists("gitrider.conf"):
