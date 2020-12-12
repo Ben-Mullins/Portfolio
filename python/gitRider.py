@@ -313,7 +313,7 @@ def pushToGit():
     os.system("git push -u origin master")
 
 def pushOrNaw():
-    date = datetime.datetime.now()
+    date = datetime.datetime.now() + datetime.timedelta(weeks = 1)
     today = "{0}-{1}-{2}".format(date.year, date.month, date.day)
     push = True # assumed true unless a match is found
     with open("gitRider.conf", "r") as f:
