@@ -27,6 +27,22 @@ this repo contains a sample project starter with the following web stack:
   poetry install
   ```
 
+## Implementation details
+* Create SQLAlchemy ORM models
+  * Add new definitions in `app/models.py`
+* Create schemas for marshalling/serializing for each of the models
+  * Add new definitions in `app/schemas.py`
+* Create API endpoints for each of the models
+  * Add new definitions in `app/resources.py`
+
 ## Running / Testing
 * poetry run python -m app.main
 
+## Submitting your results
+We are interested in understanding your approach and structuring a
+conversation around your implementation.
+
+To prepare and send your submission:
+1. Clone this repository and implement your solution
+2. Create an archive of the project directory (e.g. - `tar -czf my-name-submission.tar.gz ./my-project-directory`)
+3. Email your submission to [engineering@arceo.ai](mailto:engineering@arceo.ai)

@@ -6,7 +6,7 @@ from app import models
 
 ma = Marshmallow()
 
-# Define Schemas here https://flask-marshmallow.readthedocs.io/en/latest/
+# Define Schemas here 
 class UserSchema(ma.SQLAlchemySchema):
 	class Meta:
 		model = models.User

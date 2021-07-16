@@ -30,7 +30,8 @@ class getUsers(Resource):
 		return schemas.users_schema.dump(all_users)
 
 # get specific user by id
-@api.route('/api/users/<int:userid>')
+@api.route('/api/users/<int:userid>', endpoint='users')
+@api.doc(params={'userid': 'The user id of the user you would like to retrieve'})
 class getUser(Resource):
 	def get(self, userid):
 		user_schema = schemas.UserSchema()
@@ -46,6 +47,7 @@ class getMagazines(Resource):
 
 # get specific magazine by id
 @api.route('/api/magazines/<int:magazineid>')
+@api.doc(params={'magazineid': 'The magazine id of the magazine you would like to retrieve'})
 class getMagazine(Resource):
 	def get(self, magazineid):
 		magazine_schema = schemas.MagazineSchema()
@@ -61,6 +63,7 @@ class getSubscriptions(Resource):
 
 # get specific subscription by id
 @api.route('/api/subscriptions/<int:subid>')
+@api.doc(params={'subid': 'The subscription id of the subscription you would like to retrieve'})
 class getSubscription(Resource):
 	def get(self, subid):
 		sub_schema = schemas.SubscriptionSchema()
@@ -69,10 +72,14 @@ class getSubscription(Resource):
 
 # get user's subscriptions by user id
 @api.route('/api/users/<int:userid>/subscriptions')
+@api.doc(params={'userid': 'The user id of the user you would like to pull subscription information for'})
 class getSubscription(Resource):
 	def get(self, userid):
-		subs = models.Subscription.query.filter_by(user_id=userid).all()
-		return schemas.subscriptions_schema.dump(subs)
+		try:
+			subs = models.Subscription.query.filter_by(user_id=userid).all()
+			return schemas.subscriptions_schema.dump(subs)
+		except Exception:
+			return {'Error': 'Invalid Subscription id'}
 
 # add user
 @api.route('/api/users/add', methods=['POST'])
@@ -122,7 +129,7 @@ class createMagazine(Resource):
 
 # add subscription
 @api.route('/api/subscriptions/add', methods=['POST'])
-@api.doc(responses={ 200: 'OK', 400: 'No input data provided'})
+@api.doc(responses={ 200: 'OK', 400: 'No input data provided', 422: 'Error handling request'})
 class createSubscription(Resource):
 	@api.expect(Subscription)
 	def post(self):
@@ -150,6 +157,8 @@ class createSubscription(Resource):
 
 # delete user + their subscriptions
 @api.route('/api/users/delete/<int:userid>')
+@api.doc(params={'userid': 'The user id of the user you would like to delete'},
+					responses={ 200: 'OK', 400: 'No input data provided', 422: 'Invalid user id given'})
 class deleteUser(Resource):
 	def delete(self, userid):
 		try:
@@ -158,10 +167,12 @@ class deleteUser(Resource):
 			models.db.session.commit()
 			return {'message': 'User and their subscriptions deleted successfully.'}
 		except Exception as err:
-			return {'Error': 'Unable to handle request'}, 422
+			return {'Error': 'Unable to find user with that id'}, 422
 
 # delete magazine
 @api.route('/api/users/delete/<int:magazineid>')
+@api.doc(params={'magazineid': 'The magazine id of the magazine you would like to delete'},
+				responses={ 200: 'OK', 400: 'No input data provided', 422: 'Invalid magazine id given'})
 class deleteMagazine(Resource):
 	def delete(self, magazineid):
 		try:
@@ -169,11 +180,11 @@ class deleteMagazine(Resource):
 			models.db.session.commit()
 			return {'message': 'Magazine deleted successfully.'}
 		except Exception as err:
-			return {'Error': 'Unable to handle request'}, 422
+			return {'Error': 'Unable to find magazine with that id'}, 422
 
 # delete subscription
 @api.route('/api/subscriptions/delete', methods=['DELETE'])
-@api.doc(responses={ 200: 'OK', 400: 'No input data provided'})
+@api.doc(responses={ 200: 'OK', 400: 'No input data provided', 422: 'Improperly formatted request'})
 class deleteSubscription(Resource):
 	@api.expect(Subscription)
 	def delete(self):
@@ -184,7 +195,7 @@ class deleteSubscription(Resource):
 		try:
 			data = schemas.subscription_schema.load(json_data)
 		except ValidationError as err:
-			return err.messages, 422
+			return {'Error': 'Improperly formatted request'}, 422
 		user_id = data['user_id']
 		magazine_id = data['magazine_id']
 		magazine = models.Magazine.query.filter_by(id=magazine_id).first()
