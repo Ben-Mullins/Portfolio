@@ -27,14 +27,6 @@ this repo contains a sample project starter with the following web stack:
   poetry install
   ```
 
-## Implementation details
-* Create SQLAlchemy ORM models
-  * Add new definitions in `app/models.py`
-* Create schemas for marshalling/serializing for each of the models
-  * Add new definitions in `app/schemas.py`
-* Create API endpoints for each of the models
-  * Add new definitions in `app/resources.py`
-
 ## Running / Testing
 * poetry run python -m app.main
 
