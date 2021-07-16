@@ -4,7 +4,7 @@ from marshmallow import ValidationError
 
 from app import resources, schemas, models
 
-api = Api(version='1.0', title='Magazine Subscription API', 
+api = Api(title='Magazine Subscription API', 
           description='A simple API to manage User subscriptions to magazines.')
 
 # Define Resources here
@@ -24,6 +24,7 @@ Subscription = api.model('Subscription', {
 
 # get all users
 @api.route('/api/users')
+@api.doc(responses={200: 'OK'})
 class getUsers(Resource):
 	def get(self):
 		all_users = models.User.query.all()
@@ -31,15 +32,20 @@ class getUsers(Resource):
 
 # get specific user by id
 @api.route('/api/users/<int:userid>', endpoint='users')
-@api.doc(params={'userid': 'The user id of the user you would like to retrieve'})
+@api.doc(params={'userid': 'The user id of the user you would like to retrieve'},
+			responses={ 200: 'OK', 400: 'No input data provided', 404: 'User does not exist', 422: 'Unable to validate'})
 class getUser(Resource):
 	def get(self, userid):
-		user_schema = schemas.UserSchema()
-		user = models.User.query.filter(models.User.id == userid).one()
-		return user_schema.dump(user)
+		try:
+			user_schema = schemas.UserSchema()
+			user = models.User.query.filter(models.User.id == userid).one()
+			return user_schema.dump(user)
+		except Exception:
+			return {'message': 'User does not exist'}, 404
 
 # get all magazines
 @api.route('/api/magazines')
+@api.doc(responses={200: 'OK'})
 class getMagazines(Resource):
 	def get(self):
 		all_magazines = models.Magazine.query.all()
@@ -47,15 +53,20 @@ class getMagazines(Resource):
 
 # get specific magazine by id
 @api.route('/api/magazines/<int:magazineid>')
-@api.doc(params={'magazineid': 'The magazine id of the magazine you would like to retrieve'})
+@api.doc(params={'magazineid': 'The magazine id of the magazine you would like to retrieve'},
+		responses={ 200: 'OK', 400: 'No input data provided', 404: 'Magazine does not exist', 422: 'Unable to validate'})
 class getMagazine(Resource):
 	def get(self, magazineid):
-		magazine_schema = schemas.MagazineSchema()
-		magazine = models.Magazine.query.filter(models.Magazine.id == magazineid).one()
-		return magazine_schema.dump(magazine)
+		try:
+			magazine_schema = schemas.MagazineSchema()
+			magazine = models.Magazine.query.filter(models.Magazine.id == magazineid).one()
+			return magazine_schema.dump(magazine)
+		except Exception:
+			return {'message': 'Magazine does not exist'}, 404
 
 # get all subscriptions
 @api.route('/api/subscriptions')
+@api.doc(responses={200: 'OK'})
 class getSubscriptions(Resource):
 	def get(self):
 		all_subs = models.Subscription.query.all()
@@ -63,23 +74,28 @@ class getSubscriptions(Resource):
 
 # get specific subscription by id
 @api.route('/api/subscriptions/<int:subid>')
-@api.doc(params={'subid': 'The subscription id of the subscription you would like to retrieve'})
+@api.doc(params={'subid': 'The subscription id of the subscription you would like to retrieve'},
+		responses={ 200: 'OK', 400: 'No input data provided', 404: 'Subscription does not exist', 422: 'Unable to validate'})
 class getSubscription(Resource):
 	def get(self, subid):
-		sub_schema = schemas.SubscriptionSchema()
-		sub = models.Subscription.query.filter(models.Subscription.id == subid).one()
-		return sub_schema.dump(sub)
+		try:
+			sub_schema = schemas.SubscriptionSchema()
+			sub = models.Subscription.query.filter(models.Subscription.id == subid).one()
+			return sub_schema.dump(sub)
+		except Exception:
+			return {'message': 'Subscription does not exist'}, 404
 
 # get user's subscriptions by user id
 @api.route('/api/users/<int:userid>/subscriptions')
-@api.doc(params={'userid': 'The user id of the user you would like to pull subscription information for'})
+@api.doc(params={'userid': 'The user id of the user you would like to pull subscription information for'},
+				responses={ 200: 'OK', 400: 'No input data provided', 404: 'User id is not associated with any subscriptions', 422: 'Unable to validate'})
 class getSubscription(Resource):
 	def get(self, userid):
 		try:
 			subs = models.Subscription.query.filter_by(user_id=userid).all()
 			return schemas.subscriptions_schema.dump(subs)
 		except Exception:
-			return {'Error': 'Invalid Subscription id'}
+			return {'Error': 'User id is not associated with any subscriptions'}, 404
 
 # add user
 @api.route('/api/users/add', methods=['POST'])
@@ -103,6 +119,8 @@ class createUser(Resource):
 			models.db.session.commit()
 			result = schemas.user_schema.dump(models.User.query.get(user.id))
 			return {'message': 'Created new user.', 'user': result}
+		else:
+			return {'message': 'User already exists.'}, 400
 
 # add magazine
 @api.route('/api/magazines/add', methods=['POST'])
@@ -126,10 +144,12 @@ class createMagazine(Resource):
 			models.db.session.commit()
 			result = schemas.magazine_schema.dump(models.Magazine.query.get(magazine.id))
 			return {'message': 'Created new magazine.', 'magazine': result}
+		else:
+			return {'message': 'Magazine already exists.'}, 400
 
 # add subscription
 @api.route('/api/subscriptions/add', methods=['POST'])
-@api.doc(responses={ 200: 'OK', 400: 'No input data provided', 422: 'Error handling request'})
+@api.doc(responses={ 200: 'OK', 400: 'No input data provided', 404: 'Object does not exist', 422: 'Error handling request'})
 class createSubscription(Resource):
 	@api.expect(Subscription)
 	def post(self):
@@ -153,12 +173,12 @@ class createSubscription(Resource):
 			result = schemas.subscription_schema.dump(models.Subscription.query.get(subscription.id))
 			return {'message': 'Created new subscription.', 'subscription': result}
 		else:
-			return {'Error': 'Subscription already exists, or user/magazine does not exist'}
+			return {'Error': 'Subscription already exists, or user/magazine does not exist'}, 404
 
 # delete user + their subscriptions
 @api.route('/api/users/delete/<int:userid>')
 @api.doc(params={'userid': 'The user id of the user you would like to delete'},
-					responses={ 200: 'OK', 400: 'No input data provided', 422: 'Invalid user id given'})
+					responses={ 200: 'OK', 400: 'No input data provided', 404: 'Invalid user id given'})
 class deleteUser(Resource):
 	def delete(self, userid):
 		try:
@@ -166,25 +186,25 @@ class deleteUser(Resource):
 			models.Subscription.query.filter_by(user_id=user_id).delete()
 			models.db.session.commit()
 			return {'message': 'User and their subscriptions deleted successfully.'}
-		except Exception as err:
-			return {'Error': 'Unable to find user with that id'}, 422
+		except Exception:
+			return {'Error': 'Unable to find user with that id'}, 404
 
 # delete magazine
 @api.route('/api/users/delete/<int:magazineid>')
 @api.doc(params={'magazineid': 'The magazine id of the magazine you would like to delete'},
-				responses={ 200: 'OK', 400: 'No input data provided', 422: 'Invalid magazine id given'})
+				responses={ 200: 'OK', 400: 'No input data provided', 404: 'Invalid magazine id given'})
 class deleteMagazine(Resource):
 	def delete(self, magazineid):
 		try:
 			models.Magazine.query.filter_by(id=magazineid).delete()
 			models.db.session.commit()
 			return {'message': 'Magazine deleted successfully.'}
-		except Exception as err:
-			return {'Error': 'Unable to find magazine with that id'}, 422
+		except Exception:
+			return {'Error': 'Unable to find magazine with that id'}, 404
 
 # delete subscription
 @api.route('/api/subscriptions/delete', methods=['DELETE'])
-@api.doc(responses={ 200: 'OK', 400: 'No input data provided', 422: 'Improperly formatted request'})
+@api.doc(responses={ 200: 'OK', 400: 'No input data provided', 404: 'Subscription does not exist', 422: 'Improperly formatted request'})
 class deleteSubscription(Resource):
 	@api.expect(Subscription)
 	def delete(self):
@@ -207,4 +227,4 @@ class deleteSubscription(Resource):
 			result = schemas.subscription_schema.dump(models.Subscription.query.get(subscription.id))
 			return {'message': 'Deleted subscription.', 'subscription': result}
 		else:
-			return {'Error': 'Subscription does not exist'}
+			return {'Error': 'Subscription does not exist'}, 404
