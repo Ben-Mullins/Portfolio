@@ -1,6 +1,3 @@
-Backend Engineer Coding Challenge - Flask
-=========================================
-
 ## Problem Statement
 Create the back end portion of a simple magazine subscription service where
 users can manage subscriptions to available magazines using a REST API.
@@ -37,12 +34,3 @@ this repo contains a sample project starter with the following web stack:
 
 ## Running / Testing
 * poetry run python -m app.main
-
-## Submitting your results
-We are interested in understanding your approach and structuring a
-conversation around your implementation.
-
-To prepare and send your submission:
-1. Clone this repository and implement your solution
-2. Create an archive of the project directory (e.g. - `tar -czf my-name-submission.tar.gz ./my-project-directory`)
-3. Email your submission to [engineering@arceo.ai](mailto:engineering@arceo.ai)
